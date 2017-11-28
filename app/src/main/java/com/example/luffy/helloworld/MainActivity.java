@@ -61,7 +61,7 @@ public class MainActivity extends Activity
 
 	private static final String BUTTON_TEXT = "Call Google Sheets API";
 	private static final String PREF_ACCOUNT_NAME = "accountName";
-	private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+	private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS };
 
 	/**
 	 * Create the main activity.
@@ -349,7 +349,9 @@ public class MainActivity extends Activity
 		@Override
 		protected List<String> doInBackground(Void... params) {
 			try {
-				return getDataFromApi();
+
+				//return getDataFromApi();
+				return append();
 			} catch (Exception e) {
 				mLastError = e;
 				cancel(true);
@@ -377,11 +379,31 @@ public class MainActivity extends Activity
 					results.add(row.get(0) + ", " + row.get(1) + ", " + row.get(2));
 				}
 			}
+
 			return results;
 		}
 
 
 
+		private List<String> append() throws IOException{
+			String spreadsheetId = "1ymVAxmYQKbIim6xvNufixcSfMJlsVwwld-8cYSUsvTw";
+			String range = "Sheet1!A2:C2";
+			List<List<Object>> values = Arrays.asList(
+					Arrays.asList(
+							// Cell values ...
+							(Object) "boo"
+					)
+					// Additional rows ...
+			);
+			ValueRange body = new ValueRange()
+					.setValues(values);
+			AppendValuesResponse result =
+					mService.spreadsheets().values().append(spreadsheetId, range, body)
+							.setValueInputOption("RAW")
+							.execute();
+			List<String> results = new ArrayList<String>();
+			return results;
+		}
 		@Override
 		protected void onPreExecute() {
 			mOutputText.setText("");
