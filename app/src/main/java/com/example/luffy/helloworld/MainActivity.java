@@ -62,6 +62,7 @@ public class MainActivity extends Activity
 	private static final String BUTTON_TEXT = "Call Google Sheets API";
 	private static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS };
+	public static final String SPREAD_SHEET_ID = "1ymVAxmYQKbIim6xvNufixcSfMJlsVwwld-8cYSUsvTw";
 
 	/**
 	 * Create the main activity.
@@ -361,16 +362,15 @@ public class MainActivity extends Activity
 
 		/**
 		 * Fetch a list of names and majors of students in a sample spreadsheet:
-		 * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+		 * https://docs.google.com/spreadsheets/d/SPREAD_SHEET_ID/edit
 		 * @return List of names and majors
 		 * @throws IOException
 		 */
 		private List<String> getDataFromApi() throws IOException {
-			String spreadsheetId = "1ymVAxmYQKbIim6xvNufixcSfMJlsVwwld-8cYSUsvTw";
 			String range = "Sheet1!A2:C2";
 			List<String> results = new ArrayList<String>();
 			ValueRange response = this.mService.spreadsheets().values()
-					.get(spreadsheetId, range)
+					.get(SPREAD_SHEET_ID, range)
 					.execute();
 			List<List<Object>> values = response.getValues();
 			if (values != null) {
@@ -386,22 +386,22 @@ public class MainActivity extends Activity
 
 
 		private List<String> append() throws IOException{
-			String spreadsheetId = "1ymVAxmYQKbIim6xvNufixcSfMJlsVwwld-8cYSUsvTw";
-			String range = "Sheet1!A2:C2";
+			String range = "Tank1!A2:C2";
 			List<List<Object>> values = Arrays.asList(
 					Arrays.asList(
 							// Cell values ...
-							(Object) "boo"
+							(Object) "02/12/2017", "100", "100"
+
 					)
 					// Additional rows ...
 			);
 			ValueRange body = new ValueRange()
 					.setValues(values);
 			AppendValuesResponse result =
-					mService.spreadsheets().values().append(spreadsheetId, range, body)
+					mService.spreadsheets().values().append(SPREAD_SHEET_ID, range, body)
 							.setValueInputOption("RAW")
 							.execute();
-			List<String> results = new ArrayList<String>();
+			List<String> results = getDataFromApi();
 			return results;
 		}
 		@Override
